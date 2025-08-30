@@ -48,23 +48,33 @@ Pré-requisitos:
 
 Passo a passo:
 1) Clonar o repositório
-- git clone https://github.com/rogerarruda/ticto-backend-test.git
-- cd ticto-backend-test
+```bash
+git clone https://github.com/rogerarruda/ticto-backend-test.git
+cd ticto-backend-test
+```
 
 2) Instalar dependências PHP dentro de container (não precisa PHP local)
-- docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd)":/var/www/html -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
+```bash
+docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd)":/var/www/html -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
+```
 
 3) Configurar o .env
 - Copie .env.example para .env (se necessário) e ajuste conforme a seção “Configuração de ambiente”.
 
 4) Subir os serviços com Sail
-- ./vendor/bin/sail up -d
+```bash
+./vendor/bin/sail up -d
+```
 
 5) Gerar a chave da aplicação
-- ./vendor/bin/sail artisan key:generate
+```bash
+./vendor/bin/sail artisan key:generate
+```
 
 6) Executar migrações e seeds
-- ./vendor/bin/sail artisan migrate --seed
+```bash
+./vendor/bin/sail artisan migrate --seed
+```
 
 7) URL base
 - API base: http://localhost (ajuste APP_URL/.env se usar outra porta/host)
@@ -72,51 +82,64 @@ Passo a passo:
 
 ## Configuração de ambiente (.env)
 Ajuste os valores para o ambiente Docker do Sail (exemplos):
-- APP_URL=http://localhost
-- DB_CONNECTION=mysql
-- DB_HOST=mysql
-- DB_PORT=3306
-- DB_DATABASE=ticto_backend_test
-- DB_USERNAME=sail
-- DB_PASSWORD=password
-- REDIS_CLIENT=phpredis
-- REDIS_HOST=redis
-- REDIS_PORT=6379
+```text
+APP_URL=http://localhost
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=ticto_backend_test
+DB_USERNAME=sail
+DB_PASSWORD=password
+REDIS_CLIENT=phpredis
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
 
 Se alterar portas (APP_PORT, DB, etc.), atualize também o docker-compose e o .env.
 
 
 ## Exemplos de endpoints (cURL)
 Login (obter token):
-- curl -X POST http://localhost/api/login \
+```bash
+curl -X POST http://localhost/api/login \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -d '{"email":"admin1@email.com","password":"sua-senha"}'
+```
 
 Usando o token nas próximas requisições:
-- curl http://localhost/api/user \
+```bash
+curl http://localhost/api/user \
   -H "Accept: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
 
 Alterar senha:
-- curl -X POST http://localhost/api/password/change \
+```bash
+curl -X POST http://localhost/api/password/change \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
   -d '{"current_password":"antiga","password":"nova123456","password_confirmation":"nova123456"}'
+```
 
 Criar registro de ponto (funcionário):
-- curl -X POST http://localhost/api/time-records \
+```bash
+curl -X POST http://localhost/api/time-records \
   -H "Accept: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
 
 Listar funcionários (admin):
-- curl "http://localhost/api/admin/employees?name=&cpf=&email=&supervisor_id=" \
+```bash
+curl "http://localhost/api/admin/employees?name=&cpf=&email=&supervisor_id=" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
 
 Criar funcionário (admin):
-- curl -X POST http://localhost/api/admin/employees \
+```bash
+curl -X POST http://localhost/api/admin/employees \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI" \
@@ -131,25 +154,33 @@ Criar funcionário (admin):
     "complement":"Apto 10",
     "password":"secret1234"
   }'
+```
 
 Listar registros de ponto (admin, paginado):
-- curl "http://localhost/api/admin/time-records?start_date=&end_date=&employee_name=&supervisor_name=" \
+```bash
+curl "http://localhost/api/admin/time-records?start_date=&end_date=&employee_name=&supervisor_name=" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
 
 Relatório de registros de ponto (admin):
-- curl "http://localhost/api/admin/time-records/report?start_date=&end_date=&employee_name=&limit=1000" \
+```bash
+curl "http://localhost/api/admin/time-records/report?start_date=&end_date=&employee_name=&limit=1000" \
   -H "Accept: application/json" \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
-
+```
 
 ## Como rodar os testes
 - Rode todos os testes:
-  - ./vendor/bin/sail artisan test
+```bash
+- ./vendor/bin/sail artisan test
+```
 
 - Opcional: executar um arquivo ou diretório específico (PHPUnit/Pest):
-  - ./vendor/bin/sail artisan test --testsuite=Feature
-  - ./vendor/bin/sail artisan test tests/Feature/Admin/TimeRecordsControllerTest.php
+```bash
+./vendor/bin/sail artisan test --testsuite=Feature
+./vendor/bin/sail artisan test tests/Feature/Admin/TimeRecordsControllerTest.php
+```
 
 - Dicas:
   - O docker-compose do Sail cria um banco de testes automaticamente (via script de init). Caso necessário, revise phpunit.xml para o nome do database de teste.
