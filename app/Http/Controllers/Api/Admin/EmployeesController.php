@@ -8,21 +8,37 @@ use App\Http\Requests\Admin\Employee\{StoreEmployeeRequest, UpdateEmployeeReques
 use App\Http\Resources\{EmployeeResource, TimeRecordResource};
 use App\Models\User;
 use App\Services\ViaCep\ViaCep;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Http\Resources\Json\{AnonymousResourceCollection, ResourceCollection};
 use Illuminate\Support\Facades\{Gate, Log};
 use Symfony\Component\HttpFoundation\Response;
 
 class EmployeesController extends Controller
 {
-    public function index(): ResourceCollection
+    public function index(Request $request): ResourceCollection
     {
         Gate::authorize('viewAny', User::class);
+
+        $validated = $request->validate([
+            'name'          => 'nullable|string|max:255',
+            'cpf'           => 'nullable|cpf|max:11',
+            'email'         => 'nullable|email|max:255',
+            'supervisor_id' => 'nullable|integer|exists:users,id',
+        ]);
+
+        $name         = $validated['name'] ?? null;
+        $cpf          = $validated['cpf'] ?? null;
+        $email        = $validated['email'] ?? null;
+        $supervisorId = $validated['supervisor_id'] ?? null;
 
         return User::query()
             ->select('id', 'name', 'email', 'cpf', 'role', 'supervisor_id', 'created_at')
             ->with('supervisor:id,name,email')
             ->where('role', Role::Employee->value)
+            ->when($name, fn ($query) => $query->whereLike('name', "%{$name}%"))
+            ->when($cpf, fn ($query) => $query->where('cpf', $cpf))
+            ->when($email, fn ($query) => $query->where('email', $email))
+            ->when($supervisorId, fn ($query) => $query->where('supervisor_id', $supervisorId))
             ->orderByDesc('id')
             ->paginate(15)
             ->toResourceCollection(EmployeeResource::class);
