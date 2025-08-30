@@ -12,8 +12,8 @@ class TimeRecordResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'employee'    => EmployeeResource::make($this->whenLoaded('user')),
             'recorded_at' => $this->recorded_at->format('Y-m-d H:i:s'),
+            'employee'    => EmployeeResource::make($this->whenLoaded('user')),
         ];
     }
 }

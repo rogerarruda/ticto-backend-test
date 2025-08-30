@@ -3,23 +3,62 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TimeRecordResource;
 use App\Models\TimeRecord;
 use Illuminate\Http\{JsonResponse, Request};
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\{DB, Gate};
 
 class TimeRecordsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        Gate::authorize('viewAny', TimeRecord::class);
+
+        $validated = $request->validate([
+            'start_date'      => 'nullable|date',
+            'end_date'        => 'nullable|date|after_or_equal:start_date',
+            'employee_name'   => 'nullable|string|max:255',
+            'supervisor_name' => 'nullable|string|max:255',
+        ]);
+
+        $startDate      = $validated['start_date'] ?? null;
+        $endDate        = $validated['end_date'] ?? null;
+        $employeeName   = $validated['employee_name'] ?? null;
+        $supervisorName = $validated['supervisor_name'] ?? null;
+
         return TimeRecord::query()
-            ->with(['user.supervisor'])
+            ->with([
+                'user:id,name,cpf,email,position,supervisor_id',
+                'user.supervisor:id,name,email',
+            ])
+            ->when($startDate, function ($query) use ($startDate) {
+                $query->whereDate('recorded_at', '>=', $startDate);
+            })
+            ->when($endDate, function ($query) use ($endDate) {
+                $query->whereDate('recorded_at', '<=', $endDate);
+            })
+            ->when($startDate && $endDate, function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('recorded_at', [$startDate, $endDate]);
+            })
+            ->when($employeeName, function ($query) use ($employeeName) {
+                $query->whereHas('user', function ($query) use ($employeeName) {
+                    $query->whereLike('name', '%' . $employeeName . '%');
+                });
+            })
+            ->when($supervisorName, function ($query) use ($supervisorName) {
+                $query->whereHas('user.supervisor', function ($query) use ($supervisorName) {
+                    $query->whereLike('name', '%' . $supervisorName . '%');
+                });
+            })
             ->orderByDesc('recorded_at')
             ->paginate(15)
-            ->toResourceCollection();
+            ->toResourceCollection(TimeRecordResource::class);
     }
 
     public function report(Request $request): JsonResponse
     {
+        Gate::authorize('viewAny', TimeRecord::class);
+
         $validated = $request->validate([
             'start_date'    => 'nullable|date',
             'end_date'      => 'nullable|date|after_or_equal:start_date',
