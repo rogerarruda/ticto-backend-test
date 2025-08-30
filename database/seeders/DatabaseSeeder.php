@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\{TimeRecord, User};
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'admin@email.com',
         ]);
 
-        User::factory(10)->employee()->create();
+        User::factory(10)
+            ->employee()
+            ->has(TimeRecord::factory()->count(random_int(5, 15)))
+            ->create();
     }
 }

@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Enums\User\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Employee\{StoreEmployeeRequest, UpdateEmployeeRequest};
-use App\Http\Resources\EmployeeResource;
+use App\Http\Resources\{EmployeeResource, TimeRecordResource};
 use App\Models\User;
 use App\Services\ViaCep\ViaCep;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\{ResourceCollection};
+use Illuminate\Http\Resources\Json\{AnonymousResourceCollection, ResourceCollection};
 use Illuminate\Support\Facades\{Gate, Log};
 use Symfony\Component\HttpFoundation\Response;
 
@@ -58,6 +58,15 @@ class EmployeesController extends Controller
         $employee->loadMissing('supervisor:id,name,email');
 
         return new EmployeeResource($employee);
+    }
+
+    public function timeRecords(User $employee): AnonymousResourceCollection
+    {
+        Gate::authorize('view', $employee);
+
+        $employee->loadMissing('timeRecords');
+
+        return TimeRecordResource::collection($employee->timeRecords);
     }
 
     public function update(UpdateEmployeeRequest $request, User $employee)

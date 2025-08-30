@@ -19,7 +19,7 @@ class TimeRecord extends Model
     ];
 
     protected $casts = [
-        'recorded_at' => 'timestamp',
+        'recorded_at' => 'datetime',
     ];
 
     public function user(): BelongsTo
