@@ -14,7 +14,7 @@ class EmployeeResource extends JsonResource
             'name'          => $this->name,
             'email'         => $this->email,
             'cpf'           => $this->cpf,
-            'birth_date'    => $this->birth_date,
+            'birth_date'    => $this->birth_date?->format('Y-m-d'),
             'position'      => $this->position,
             'zipcode'       => $this->zipcode,
             'street'        => $this->street,

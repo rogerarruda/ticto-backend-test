@@ -21,12 +21,12 @@ class UserPolicy
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->role->isAdmin();
     }
 
     public function update(User $user, User $model): bool
     {
-        return true;
+        return $user->role->isAdmin();
     }
 
     public function delete(User $user, User $model): bool

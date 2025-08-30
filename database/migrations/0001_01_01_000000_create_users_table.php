@@ -15,12 +15,12 @@ return new class () extends Migration {
             $table->date('birth_date');
             $table->string('position');
             $table->string('zipcode');
-            $table->string('street');
+            $table->string('street')->nullable();
             $table->string('number')->nullable();
             $table->string('complement')->nullable();
-            $table->string('neighborhood');
-            $table->string('city');
-            $table->string('state');
+            $table->string('neighborhood')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
             $table->string('role');
             $table->foreignId('supervisor_id')->nullable()->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->timestamp('email_verified_at')->nullable();
