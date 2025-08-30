@@ -12,6 +12,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', fn (Request $request) => $request->user());
     Route::post('/logout', Api\Auth\LogoutController::class);
 
+    Route::apiResource('time-records', Api\Employee\TimeRecordController::class)
+        ->only('store')
+        ->middleware('throttle:timerecord');
+
     Route::prefix('admin')->group(function () {
         Route::get('employees/{employee}/time-records', [Api\Admin\EmployeesController::class, 'timeRecords']);
         Route::apiResource('employees', Api\Admin\EmployeesController::class);
