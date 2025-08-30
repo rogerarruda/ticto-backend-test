@@ -11,6 +11,7 @@ Route::post('/login', Api\Auth\LoginController::class);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', fn (Request $request) => $request->user());
     Route::post('/logout', Api\Auth\LogoutController::class);
+    Route::post('/password/change', Api\Auth\ChangePasswordController::class);
 
     Route::apiResource('time-records', Api\Employee\TimeRecordController::class)
         ->only('store')
