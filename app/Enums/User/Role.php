@@ -14,4 +14,9 @@ enum Role: string
             self::Employee => 'Funcionário',
         };
     }
+
+    public function isAdmin(): bool
+    {
+        return $this === self::Admin;
+    }
 }

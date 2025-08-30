@@ -23,6 +23,8 @@ final class User extends Authenticatable
         'name',
         'email',
         'cpf',
+        'birth_date',
+        'position',
         'zipcode',
         'street',
         'number',
@@ -31,7 +33,7 @@ final class User extends Authenticatable
         'city',
         'state',
         'role',
-        'user_id',
+        'supervisor_id',
         'password',
     ];
 
@@ -49,9 +51,9 @@ final class User extends Authenticatable
         ];
     }
 
-    public function user(): BelongsTo
+    public function supervisor(): BelongsTo
     {
-        return $this->belongsTo(self::class);
+        return $this->belongsTo(self::class, 'supervisor_id');
     }
 
     public function timeRecords(): HasMany
