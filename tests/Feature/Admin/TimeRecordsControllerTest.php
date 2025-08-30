@@ -148,7 +148,7 @@ it('returns tabular report with total and filters; respects limit', function () 
             'filters' => ['start_date', 'end_date', 'employee_name', 'limit'],
         ])
         ->assertJsonPath('total', 1)
-        ->assertJsonPath('filters.limit', 1);
+        ->assertJsonPath('filters.limit', '1');
 
     $resp2 = $this->getJson('/api/admin/time-records/report?start_date=2025-07-02');
     $resp2->assertOk()
