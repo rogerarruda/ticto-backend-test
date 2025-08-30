@@ -82,9 +82,13 @@ class EmployeesController extends Controller
         return new EmployeeResource($employee);
     }
 
-    public function destroy(User $employee)
+    public function destroy(User $employee): JsonResponse
     {
+        Gate::authorize('delete', $employee);
 
+        $employee->delete();
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
     private function lookupAddressByZipcode(string $zipcode): ?array
