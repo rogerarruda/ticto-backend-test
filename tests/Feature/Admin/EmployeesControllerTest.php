@@ -38,8 +38,8 @@ it('lists only employees with pagination', function () {
         ->assertJsonStructure([
             'data' => [
                 '*' => [
-                    'id', 'name', 'email', 'cpf', 'birth_date', 'position', 'zipcode',
-                    'street', 'number', 'complement', 'neighborhood', 'city', 'state',
+                    'id', 'name', 'email', 'cpf', 'position', 'zipcode',
+                    'street', 'neighborhood', 'city', 'state',
                     'role', 'supervisor_id', 'supervisor', 'created_at', 'updated_at',
                 ],
             ],
