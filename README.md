@@ -53,30 +53,26 @@ git clone https://github.com/rogerarruda/ticto-backend-test.git
 cd ticto-backend-test
 ```
 
-2) Instalar dependências PHP dentro de container (não precisa PHP local)
-```bash
-docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd)":/var/www/html -w /var/www/html laravelsail/php84-composer:latest composer install --ignore-platform-reqs
-```
-
-3) Configurar o .env
+2) Configurar o .env
 - Copie .env.example para .env (se necessário) e ajuste conforme a seção “Configuração de ambiente”.
 
-4) Subir os serviços com Sail
+
+3) Subir os serviços com Sail
 ```bash
 ./vendor/bin/sail up -d
 ```
 
-5) Gerar a chave da aplicação
+4) Gerar a chave da aplicação
 ```bash
 ./vendor/bin/sail artisan key:generate
 ```
 
-6) Executar migrações e seeds
+5) Executar migrações e seeds
 ```bash
 ./vendor/bin/sail artisan migrate --seed
 ```
 
-7) URL base
+6) URL base
 - API base: http://localhost (ajuste APP_URL/.env se usar outra porta/host)
 
 
@@ -194,7 +190,12 @@ curl "http://localhost/api/admin/time-records/report?start_date=&end_date=&emplo
   2. Verifique a variável de coleção baseUrl (padrão http://localhost). Ajuste se usar outra porta/host.
   3. Execute a requisição Auth > Login com credenciais válidas. Um script de teste salvará o access_token em {{token}}.
   4. As demais requisições já usam Authorization: Bearer {{token}}.
-
+- Use as credenciais de admin `admin1@email.com`/`password` ou `admin2@email.com`/`password` para testar as rotas de Admin.
+- Use as credenciais de funcionário para testar as rotas de funcionário.
+  - `funcionario1@email.com`/`password` -> associada ao admin1
+  - ...5
+  - `funcionario11@email.com`/`password` -> associada ao admin2
+  - ...15
 
 ## O que foi feito e por que (decisões técnicas)
 - Laravel Sanctum para autenticação por token
