@@ -1,0 +1,511 @@
+{
+  "info": {
+    "name": "Ticto Backend Test",
+    "_postman_id": "f2f9c2ab-2b34-4a0c-9c8d-7b9b9d5c0abc",
+    "description": "Coleção Postman para os endpoints da API Ticto Backend Test. Utilize a variável {{baseUrl}} para o host (padrão http://localhost). Faça login para popular automaticamente a variável {{token}} usada como Bearer nas requisições autenticadas.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin1@email.com\",\n  \"password\": \"your-password\"\n}"
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "let json;",
+                  "try { json = pm.response.json(); } catch(e) { json = null }",
+                  "if (json && json.access_token) {",
+                  "  pm.collectionVariables.set('token', json.access_token);",
+                  "  pm.test('Token capturado e salvo em {{token}}', function () { pm.expect(pm.collectionVariables.get('token')).to.be.a('string'); });",
+                  "} else {",
+                  "  pm.test('Resposta de login contém token', function () { pm.expect.fail('Sem access_token na resposta'); });",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "User (me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "user"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "logout"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/password/change",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "password",
+                "change"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"old-password\",\n  \"password\": \"new-strong-password\",\n  \"password_confirmation\": \"new-strong-password\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Employee",
+      "item": [
+        {
+          "name": "Create Time Record",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/time-records",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "time-records"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Employees",
+          "item": [
+            {
+              "name": "List Employees",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/employees?name=&cpf=&email=&supervisor_id=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "employees"
+                  ],
+                  "query": [
+                    {
+                      "key": "name",
+                      "value": ""
+                    },
+                    {
+                      "key": "cpf",
+                      "value": ""
+                    },
+                    {
+                      "key": "email",
+                      "value": ""
+                    },
+                    {
+                      "key": "supervisor_id",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Create Employee",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/employees",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "employees"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Funcionário Teste\",\n  \"email\": \"funcionario.teste@email.com\",\n  \"cpf\": \"123.456.789-09\",\n  \"birth_date\": \"1990-05-20\",\n  \"position\": \"Analista\",\n  \"zipcode\": \"01001000\",\n  \"number\": \"123\",\n  \"complement\": \"Apto 10\",\n  \"password\": \"secret1234\"\n}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Show Employee",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/employees/{{employee_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "employees",
+                    "{{employee_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Update Employee",
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/employees/{{employee_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "employees",
+                    "{{employee_id}}"
+                  ]
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Funcionário Alterado\",\n  \"email\": \"func.alt@email.com\",\n  \"cpf\": \"12345678909\",\n  \"birth_date\": \"1991-01-01\",\n  \"position\": \"Sênior\",\n  \"zipcode\": \"01001000\",\n  \"number\": \"456\",\n  \"complement\": \"Casa\"\n}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Delete Employee",
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/employees/{{employee_id}}",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "employees",
+                    "{{employee_id}}"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Employee Time Records (by employee)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/employees/{{employee_id}}/time-records",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "employees",
+                    "{{employee_id}}",
+                    "time-records"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Time Records",
+          "item": [
+            {
+              "name": "List Time Records (paginated)",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/time-records?start_date=&end_date=&employee_name=&supervisor_name=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "time-records"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": ""
+                    },
+                    {
+                      "key": "end_date",
+                      "value": ""
+                    },
+                    {
+                      "key": "employee_name",
+                      "value": ""
+                    },
+                    {
+                      "key": "supervisor_name",
+                      "value": ""
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Report",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/admin/time-records/report?start_date=&end_date=&employee_name=&limit=",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "time-records",
+                    "report"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_date",
+                      "value": ""
+                    },
+                    {
+                      "key": "end_date",
+                      "value": ""
+                    },
+                    {
+                      "key": "employee_name",
+                      "value": ""
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
